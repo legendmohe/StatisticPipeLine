@@ -73,10 +73,13 @@ public class StatisticPipeLine {
     }
 
     public synchronized Map<String, Object> assemble() {
+        // 存放结果
         HashMap<String, Object> result = new HashMap<String, Object>();
+        // 用于各个action之间共享数据
+        HashMap<String, Object> context = new HashMap<String, Object>();
         for (IStatisticAction action : mActions) {
             if (action.getName() != null && action.getName().length() > 0) {
-                action.onAssemble(this, result);
+                action.onAssemble(this, context, result);
             }
         }
         return result;

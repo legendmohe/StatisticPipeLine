@@ -7,6 +7,8 @@ import java.util.Map;
  */
 public interface TimerAction {
 
+    ///////////////////////////////////start///////////////////////////////////
+
     class Start extends BaseStatisticAction {
 
         private long mStartTs;
@@ -29,11 +31,11 @@ public interface TimerAction {
         }
 
         @Override
-        public void onAssemble(StatisticPipeLine pipeLine, Map<String, Object> result) {
-            // 默认不放到结果里面
-//        result.put(getName(), mStartTs);
+        public void onAssemble(StatisticPipeLine pipeLine, Map<String, Object> context, Map<String, Object> result) {
         }
     }
+
+    ///////////////////////////////////end///////////////////////////////////
 
     class End extends BaseStatisticAction {
 
@@ -50,7 +52,7 @@ public interface TimerAction {
         }
 
         @Override
-        public void onAssemble(StatisticPipeLine pipeLine, Map<String, Object> result) {
+        public void onAssemble(StatisticPipeLine pipeLine, Map<String, Object> context, Map<String, Object> result) {
             IStatisticAction action = pipeLine.get(mStartActionName);
             if (action instanceof Start) {
                 long startTs = ((Start) action).getStartTs();

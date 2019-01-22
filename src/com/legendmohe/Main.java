@@ -4,6 +4,7 @@ import java.util.Map;
 
 import pipeline.CounterAction;
 import pipeline.EnumAction;
+import pipeline.InterceptAction;
 import pipeline.StatisticPipeLine;
 import pipeline.TimerAction;
 
@@ -33,6 +34,15 @@ public class Main {
 
         // 结束计时
         pipeLine.put(TimerAction.End.fromStart("start_click"), "show_video");
+
+        // 对结果进行处理
+        pipeLine.put(new InterceptAction() {
+
+            @Override
+            public void onAssemble(StatisticPipeLine pipeLine, Map<String, Object> context, Map<String, Object> result) {
+                result.put("other", "hahaha");
+            }
+        });
 
         // 获得统计结果
         Map<String, Object> assemble = pipeLine.assemble();

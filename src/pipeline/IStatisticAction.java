@@ -13,5 +13,5 @@ public interface IStatisticAction {
 
     IStatisticAction copy();
 
-    void onAssemble(StatisticPipeLine pipeLine, Map<String, Object> result);
+    void onAssemble(StatisticPipeLine pipeLine, Map<String, Object> context, Map<String, Object> result);
 }

@@ -45,7 +45,7 @@ public class CounterAction extends BaseStatisticAction {
     }
 
     @Override
-    public void onAssemble(StatisticPipeLine pipeLine, Map<String, Object> result) {
+    public void onAssemble(StatisticPipeLine pipeLine, Map<String, Object> context, Map<String, Object> result) {
         for (IStatisticAction action : pipeLine.getActions()) {
             if (action instanceof CounterOp
                     && action instanceof CounterAction
