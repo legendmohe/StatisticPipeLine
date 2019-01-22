@@ -3,28 +3,27 @@ package com.legendmohe;
 import java.util.Map;
 
 import pipeline.CounterAction;
-import pipeline.EndTsAction;
 import pipeline.EnumAction;
-import pipeline.StartTsAction;
 import pipeline.StatisticPipeLine;
+import pipeline.TimerAction;
 
 public class Main {
 
     public static void main(String[] args) {
-	    // 1. 新建一个统计项
+        // 1. 新建一个统计项
         StatisticPipeLine pipeLine = StatisticPipeLine.create("game_statistic");
 
         // 标记一些动作
-        // 默认提供了开始-结束计时动作(StartTsAction-EndTsAction)、计数器动作(CounterAction)、枚举动作(EnumAction)
+        // 默认提供了开始-结束计时动作(TimerAction)、计数器动作(CounterAction)、枚举动作(EnumAction)
         pipeLine.put(EnumAction.fromValue(5), "entrance")
                 .put(CounterAction.zero(), "counter")
-                .put(StartTsAction.fromCurrentTimestamp(), "start_click");
+                .put(TimerAction.Start.fromCurrentTimestamp(), "start_click");
 
         // 模拟耗时操作
         sleep(2000);
 
         // 结束计时
-        pipeLine.put(EndTsAction.fromStartAction("start_click"), "show_ui");
+        pipeLine.put(TimerAction.End.fromStart("start_click"), "show_ui");
 
         // 计数器+1
         pipeLine.put(CounterAction.increase("counter")); // should print counter=1
@@ -33,7 +32,7 @@ public class Main {
         sleep(1000);
 
         // 结束计时
-        pipeLine.put(EndTsAction.fromStartAction("start_click"), "show_video");
+        pipeLine.put(TimerAction.End.fromStart("start_click"), "show_video");
 
         // 获得统计结果
         Map<String, Object> assemble = pipeLine.assemble();
