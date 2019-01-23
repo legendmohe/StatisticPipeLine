@@ -3,6 +3,7 @@ package pipeline;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.Map;
 
 /**
@@ -69,6 +70,24 @@ public class StatisticPipeLine {
         return null;
     }
 
+    public synchronized void remove(String name) {
+        ListIterator<IStatisticAction> iter = mActions.listIterator();
+        while (iter.hasNext()) {
+            if (iter.next().getName().equals(name)) {
+                iter.remove();
+            }
+        }
+    }
+
+    public synchronized void remove(String name, Comparable<IStatisticAction> comparator) {
+        ListIterator<IStatisticAction> iter = mActions.listIterator();
+        while (iter.hasNext()) {
+            if (comparator.compareTo(iter.next()) == 0) {
+                iter.remove();
+            }
+        }
+    }
+
     public synchronized IStatisticAction getClone(String name) {
         IStatisticAction iStatisticAction = get(name);
         return iStatisticAction != null ? iStatisticAction.copy() : null;
@@ -95,9 +114,10 @@ public class StatisticPipeLine {
                 action.onCollect(this, context, result);
             }
         }
-        for (IStatisticAction action : new ArrayList<>(mActions)) {
-            if (!action.onPostCollect(this, context)) {
-                mActions.remove(action);
+        ListIterator<IStatisticAction> iter = mActions.listIterator();
+        while (iter.hasNext()) {
+            if (!iter.next().onPostCollect(this, context)) {
+                iter.remove();
             }
         }
         return result;

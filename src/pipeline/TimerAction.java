@@ -78,7 +78,7 @@ public interface TimerAction {
 
         private long mPeriod;
 
-        private String mOriginalName;
+        private String mGroupName;
 
         private static final AtomicInteger sId = new AtomicInteger();
 
@@ -95,9 +95,13 @@ public interface TimerAction {
             return mPeriod;
         }
 
+        public String getGroupName() {
+            return mGroupName;
+        }
+
         @Override
         public void setName(String name) {
-            mOriginalName = name;
+            mGroupName = name;
             super.setName(name + "_" + mSessionId);
         }
 
@@ -114,7 +118,7 @@ public interface TimerAction {
 
         @Override
         public void onCollect(StatisticPipeLine pipeLine, Map<String, Object> context, Map<String, Object> result) {
-            if (result.containsKey(mOriginalName)) {
+            if (result.containsKey(mGroupName)) {
                 // 不要每一个都算一遍
                 return;
             }
@@ -122,12 +126,12 @@ public interface TimerAction {
             long count = 0;
             List<IStatisticAction> actions = pipeLine.getActions();
             for (IStatisticAction action : actions) {
-                if (action instanceof Avg && action.getName().startsWith(mOriginalName)) {
+                if (action instanceof Avg && action.getName().startsWith(mGroupName)) {
                     total += ((Avg) action).getPeriod();
                     count++;
                 }
             }
-            result.put(mOriginalName, total / count);
+            result.put(mGroupName, total / count);
         }
 
         private long getCurrentTs() {

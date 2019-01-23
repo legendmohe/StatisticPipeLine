@@ -50,6 +50,9 @@ public class Main {
         // 收集平均值
         MainStat.pipeline().put(TimerAction.Avg.collect("start_click"), "show_ui_avg");
 
+        // 可以清除指定name的action
+//        MainStat.pipeline().put(ClearAction.forName("show_ui_avg"));
+
         // 结束统计，发送统计数据
         MainStat.sendStat();
     }
