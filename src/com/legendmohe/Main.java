@@ -8,11 +8,19 @@ import pipeline.InterceptAction;
 import pipeline.StatisticPipeLine;
 import pipeline.TimerAction;
 
+/**
+ * 这里提供了一个使用StatisticPipeLine的使用例子
+ * 使用StatisticPipeLine的好处有：
+ * 1. 统一统计逻辑
+ * 2. 统一代码格式
+ * 另外，StatisticPipeLine设计上也很方便根据业务需求扩展统计能力。
+ */
 public class Main {
 
     public static void main(String[] args) {
-        // 标记一些动作
-        // 默认提供了开始-结束计时动作(TimerAction)、计数器动作(CounterAction)、枚举动作(EnumAction)
+        // 首先，新建一个stat类对pipeline进行单例化封装。
+        // 然后可以开始利用pipeline的能力进行打点。
+        // StatisticPipeLine默认提供了开始-结束计时动作(TimerAction)、计数器动作(CounterAction)、枚举动作(EnumAction)
         // TODO - name字符串全部改成MainStat的常量
         MainStat.pipeline()
                 .put(EnumAction.fromValue(5), "entrance")
@@ -69,22 +77,23 @@ public class Main {
             // 可以对结果进行处理
             sPipeLine.put(new InterceptAction() {
                 @Override
-                public void onCalculate(StatisticPipeLine pipeLine, Map<String, Object> context, Map<String, Object> result) {
+                public void onCollect(StatisticPipeLine pipeLine, Map<String, Object> context, Map<String, Object> result) {
                     result.put("total_result_count", result.size());
                 }
             });
 
             // 获得统计结果
-            Map<String, Object> result = sPipeLine.calculate();
-            Map<String, Object> result2 = sPipeLine.calculate();
+            Map<String, Object> result = sPipeLine.collect();
+            Map<String, Object> result2 = sPipeLine.collect();
 
             // 重置
             sPipeLine.reset();
 
             // 多次calculate结果应该是一样的
             if (!result.toString().equals(result2.toString())) {
-                throw new IllegalStateException("calculate 不一致");
+                throw new IllegalStateException("result 不一致");
             } else {
+                // 模拟发送数据
                 System.out.println(result);
             }
         }

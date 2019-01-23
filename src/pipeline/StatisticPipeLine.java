@@ -82,18 +82,18 @@ public class StatisticPipeLine {
         mActions.clear();
     }
 
-    public synchronized Map<String, Object> calculate() {
+    public synchronized Map<String, Object> collect() {
         // 存放结果
         HashMap<String, Object> result = new HashMap<String, Object>();
         // 用于各个action之间共享数据
         HashMap<String, Object> context = new HashMap<String, Object>();
         for (IStatisticAction action : mActions) {
             if (action.getName() != null && action.getName().length() > 0) {
-                action.onCalculate(this, context, result);
+                action.onCollect(this, context, result);
             }
         }
         for (IStatisticAction action : new ArrayList<>(mActions)) {
-            if (!action.onPostCalculate(this, context)) {
+            if (!action.onPostCollect(this, context)) {
                 mActions.remove(action);
             }
         }

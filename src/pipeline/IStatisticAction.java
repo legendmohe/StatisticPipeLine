@@ -44,7 +44,7 @@ public interface IStatisticAction {
      * @param context
      * @param result
      */
-    void onCalculate(StatisticPipeLine pipeLine, Map<String, Object> context, Map<String, Object> result);
+    void onCollect(StatisticPipeLine pipeLine, Map<String, Object> context, Map<String, Object> result);
 
     /**
      * 在进行计算结果后回调
@@ -53,5 +53,5 @@ public interface IStatisticAction {
      * @param context
      * @return false为从action队列中移除，true为不移除
      */
-    boolean onPostCalculate(StatisticPipeLine pipeLine, Map<String, Object> context);
+    boolean onPostCollect(StatisticPipeLine pipeLine, Map<String, Object> context);
 }

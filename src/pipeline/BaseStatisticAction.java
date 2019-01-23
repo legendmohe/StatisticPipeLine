@@ -35,7 +35,7 @@ public abstract class BaseStatisticAction implements IStatisticAction {
     }
 
     @Override
-    public boolean onPostCalculate(StatisticPipeLine pipeLine, Map<String, Object> context) {
+    public boolean onPostCollect(StatisticPipeLine pipeLine, Map<String, Object> context) {
         return true;
     }
 

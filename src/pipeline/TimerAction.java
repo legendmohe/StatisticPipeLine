@@ -33,7 +33,7 @@ public interface TimerAction {
         }
 
         @Override
-        public void onCalculate(StatisticPipeLine pipeLine, Map<String, Object> context, Map<String, Object> result) {
+        public void onCollect(StatisticPipeLine pipeLine, Map<String, Object> context, Map<String, Object> result) {
         }
     }
 
@@ -63,7 +63,7 @@ public interface TimerAction {
         }
 
         @Override
-        public void onCalculate(StatisticPipeLine pipeLine, Map<String, Object> context, Map<String, Object> result) {
+        public void onCollect(StatisticPipeLine pipeLine, Map<String, Object> context, Map<String, Object> result) {
             result.put(getName(), mPeriod);
         }
     }
@@ -113,7 +113,7 @@ public interface TimerAction {
         }
 
         @Override
-        public void onCalculate(StatisticPipeLine pipeLine, Map<String, Object> context, Map<String, Object> result) {
+        public void onCollect(StatisticPipeLine pipeLine, Map<String, Object> context, Map<String, Object> result) {
             if (result.containsKey(mOriginalName)) {
                 // 不要每一个都算一遍
                 return;

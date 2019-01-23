@@ -9,10 +9,10 @@ import java.util.Map;
  */
 public abstract class InterceptAction extends BaseStatisticAction {
 
-    private boolean mRemoveAfterCalculate;
+    private boolean mRemoveAfterCollect;
 
-    public InterceptAction(boolean removeAfterCalculate) {
-        mRemoveAfterCalculate = removeAfterCalculate;
+    public InterceptAction(boolean removeAfterCollect) {
+        mRemoveAfterCollect = removeAfterCollect;
         setName("intercept_" + System.currentTimeMillis());
     }
 
@@ -21,7 +21,7 @@ public abstract class InterceptAction extends BaseStatisticAction {
     }
 
     @Override
-    public boolean onPostCalculate(StatisticPipeLine pipeLine, Map<String, Object> context) {
-        return !mRemoveAfterCalculate;
+    public boolean onPostCollect(StatisticPipeLine pipeLine, Map<String, Object> context) {
+        return !mRemoveAfterCollect;
     }
 }

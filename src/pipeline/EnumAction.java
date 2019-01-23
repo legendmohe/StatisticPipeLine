@@ -39,7 +39,7 @@ public class EnumAction<T> extends BaseStatisticAction {
     }
 
     @Override
-    public void onCalculate(StatisticPipeLine pipeLine, Map<String, Object> context, Map<String, Object> result) {
+    public void onCollect(StatisticPipeLine pipeLine, Map<String, Object> context, Map<String, Object> result) {
         result.put(getName(), mValue);
     }
 }
