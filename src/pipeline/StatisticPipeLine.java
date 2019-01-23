@@ -79,6 +79,9 @@ public class StatisticPipeLine {
     }
 
     public synchronized void reset() {
+        for (IStatisticAction action : mActions) {
+            action.onReset(this);
+        }
         mActions.clear();
     }
 

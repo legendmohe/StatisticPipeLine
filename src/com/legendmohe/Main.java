@@ -66,7 +66,7 @@ public class Main {
         }
 
         public static void sendStat() {
-            // 可以对结果进行处理
+            // 可以对已经处理了的结果再次进行处理
             sPipeLine.put(new InterceptAction() {
                 @Override
                 public void onCollect(StatisticPipeLine pipeLine, Map<String, Object> context, Map<String, Object> result) {
@@ -78,7 +78,7 @@ public class Main {
             Map<String, Object> result = sPipeLine.collect();
             Map<String, Object> result2 = sPipeLine.collect();
 
-            // 重置
+            // 重置，清空action
             sPipeLine.reset();
 
             // 多次calculate结果应该是一样的
