@@ -30,9 +30,9 @@ public class StatisticPipeLine {
         return mTag;
     }
 
-    public synchronized StatisticPipeLine put(IStatisticAction action, String actionTag) {
-        action.setName(actionTag);
-        int i = find(actionTag);
+    public synchronized StatisticPipeLine put(IStatisticAction action, String name) {
+        action.setName(name);
+        int i = find(name);
         if (i >= 0) {
             mActions.remove(i);
             mActions.add(i, action);
@@ -47,20 +47,20 @@ public class StatisticPipeLine {
         return this;
     }
 
-    public synchronized IStatisticAction get(String actionName) {
-        if (actionName == null || actionName.length() == 0) {
+    public synchronized IStatisticAction get(String name) {
+        if (name == null || name.length() == 0) {
             return null;
         }
         for (IStatisticAction action : mActions) {
-            if (action.getName().equals(actionName)) {
+            if (action.getName().equals(name)) {
                 return action;
             }
         }
         return null;
     }
 
-    public synchronized IStatisticAction getClone(String actionName) {
-        IStatisticAction iStatisticAction = get(actionName);
+    public synchronized IStatisticAction getClone(String name) {
+        IStatisticAction iStatisticAction = get(name);
         return iStatisticAction != null ? iStatisticAction.copy() : null;
     }
 

@@ -1,5 +1,7 @@
 package pipeline;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -8,10 +10,12 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 public class CounterAction extends BaseStatisticAction {
 
-    private AtomicInteger mValue;
+    private AtomicInteger mInitValue;
 
-    public static CounterAction fromValue(int value) {
-        return new CounterAction(value);
+    private List<Integer> mOpList = new ArrayList<Integer>();
+
+    public static CounterAction fromValue(int initValue) {
+        return new CounterAction(initValue);
     }
 
     public static CounterAction zero() {
@@ -26,34 +30,38 @@ public class CounterAction extends BaseStatisticAction {
         return new Decreaser(counter);
     }
 
-    private CounterAction(int value) {
-        mValue = new AtomicInteger(value);
+    private CounterAction(int initValue) {
+        mInitValue = new AtomicInteger(initValue);
     }
 
-    public CounterAction increase() {
-        mValue.incrementAndGet();
+    public synchronized CounterAction increase() {
+        mOpList.add(1);
         return this;
     }
 
-    public CounterAction decrease() {
-        mValue.decrementAndGet();
+    public synchronized CounterAction decrease() {
+        mOpList.add(-1);
         return this;
     }
 
     public int getValue() {
-        return mValue.intValue();
+        return mInitValue.intValue();
     }
 
     @Override
     public void onAssemble(StatisticPipeLine pipeLine, Map<String, Object> context, Map<String, Object> result) {
+        int intValue = mInitValue.intValue();
         for (IStatisticAction action : pipeLine.getActions()) {
             if (action instanceof CounterOp
                     && action instanceof CounterAction
                     && ((CounterOp) action).getCountName().equals(getName())) {
-                mValue.set(mValue.intValue() + ((CounterAction) action).getValue());
+                intValue += ((CounterAction) action).getValue();
             }
         }
-        result.put(getName(), mValue.intValue());
+        for (Integer op : mOpList) {
+            intValue += op;
+        }
+        result.put(getName(), intValue);
     }
 
     ///////////////////////////////////private///////////////////////////////////
