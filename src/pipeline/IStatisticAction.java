@@ -14,6 +14,21 @@ public interface IStatisticAction {
     IStatisticAction copy();
 
     /**
+     * 被放进pipeline时调用
+     *
+     * @param pipeLine
+     * @return true为可以放进去，false为不放进去
+     */
+    boolean onPut(StatisticPipeLine pipeLine);
+
+    /**
+     * pipeLine调用reset，用于action清理状态
+     *
+     * @param pipeLine
+     */
+    void onReset(StatisticPipeLine pipeLine);
+
+    /**
      * 注入相同name的action时，决定是否进行替换
      *
      * @param pipeLine
@@ -23,7 +38,7 @@ public interface IStatisticAction {
     boolean onReplace(StatisticPipeLine pipeLine, IStatisticAction newAction);
 
     /**
-     * 计算结果。注意，所有的状态只在这里进行运算。action要满足多次assemble结果是一致的
+     * 计算结果。注意，action要满足多次assemble结果是一致的
      *
      * @param pipeLine
      * @param context

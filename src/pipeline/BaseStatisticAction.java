@@ -5,7 +5,7 @@ package pipeline;
  */
 public abstract class BaseStatisticAction implements IStatisticAction {
 
-    private String mName;
+    private String mName = "";
 
     @Override
     public String getName() {
@@ -15,6 +15,16 @@ public abstract class BaseStatisticAction implements IStatisticAction {
     @Override
     public void setName(String name) {
         mName = name;
+    }
+
+    @Override
+    public boolean onPut(StatisticPipeLine pipeLine) {
+        return true;
+    }
+
+    @Override
+    public void onReset(StatisticPipeLine pipeLine) {
+
     }
 
     @Override

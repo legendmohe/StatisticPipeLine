@@ -1,6 +1,8 @@
 package pipeline;
 
+import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * Created by hexinyu on 2019/1/22.
@@ -40,7 +42,7 @@ public interface TimerAction {
     class End extends BaseStatisticAction {
 
         private String mStartActionName;
-        private final long mCurTs;
+        private long mPeriod;
 
         public static End fromStart(String startActionName) {
             return new End(startActionName);
@@ -48,16 +50,88 @@ public interface TimerAction {
 
         private End(String startActionName) {
             mStartActionName = startActionName;
-            mCurTs = System.currentTimeMillis();
+        }
+
+        @Override
+        public boolean onPut(StatisticPipeLine pipeLine) {
+            IStatisticAction action = pipeLine.get(mStartActionName);
+            if (action instanceof Start) {
+                long startTs = ((Start) action).getStartTs();
+                mPeriod = System.currentTimeMillis() - startTs;
+            }
+            return super.onPut(pipeLine);
         }
 
         @Override
         public void onCalculate(StatisticPipeLine pipeLine, Map<String, Object> context, Map<String, Object> result) {
-            IStatisticAction action = pipeLine.get(mStartActionName);
-            if (action instanceof Start) {
-                long startTs = ((Start) action).getStartTs();
-                result.put(getName(), mCurTs - startTs);
+            result.put(getName(), mPeriod);
+        }
+    }
+
+    ///////////////////////////////////avg///////////////////////////////////
+
+    class Avg extends BaseStatisticAction {
+
+        private String mStartActionName;
+
+        private final int mSessionId;
+
+        private long mPeriod;
+
+        private String mOriginalName;
+
+        private static final AtomicInteger sId = new AtomicInteger();
+
+        public static IStatisticAction collect(String startActionName) {
+            return new Avg(startActionName);
+        }
+
+        private Avg(String startActionName) {
+            mStartActionName = startActionName;
+            mSessionId = sId.incrementAndGet();
+        }
+
+        public long getPeriod() {
+            return mPeriod;
+        }
+
+        @Override
+        public void setName(String name) {
+            mOriginalName = name;
+            super.setName(name + "_" + mSessionId);
+        }
+
+        @Override
+        public boolean onPut(StatisticPipeLine pipeLine) {
+            IStatisticAction startAction = pipeLine.get(mStartActionName);
+            if (!(startAction instanceof Start)) {
+                throw new NullPointerException("start action must be instance of TimerAction.Start:" + mStartActionName);
             }
+
+            mPeriod = getCurrentTs() - ((Start) startAction).getStartTs();
+            return true;
+        }
+
+        @Override
+        public void onCalculate(StatisticPipeLine pipeLine, Map<String, Object> context, Map<String, Object> result) {
+            if (result.containsKey(mOriginalName)) {
+                // 不要每一个都算一遍
+                return;
+            }
+            long total = 0;
+            long count = 0;
+            List<IStatisticAction> actions = pipeLine.getActions();
+            for (IStatisticAction action : actions) {
+                if (action instanceof Avg && action.getName().startsWith(mOriginalName)) {
+                    total += ((Avg) action).getPeriod();
+                    count++;
+                }
+            }
+            result.put(mOriginalName, total / count);
+        }
+
+        private long getCurrentTs() {
+            return System.currentTimeMillis();
         }
     }
 }

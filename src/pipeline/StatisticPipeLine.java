@@ -18,6 +18,9 @@ public class StatisticPipeLine {
 
     ///////////////////////////////////public///////////////////////////////////
 
+    /*
+    注意，选择容器时要保证能够按照插入时的顺序进行遍历
+     */
     private List<IStatisticAction> mActions = new ArrayList<IStatisticAction>();
 
     private String mTag;
@@ -37,16 +40,16 @@ public class StatisticPipeLine {
             IStatisticAction oldAction = mActions.get(i);
             if (oldAction.onReplace(this, action)) {
                 mActions.remove(i);
-                mActions.add(i, action);
+                putActionInternal(i, action);
             }
         } else {
-            mActions.add(action);
+            putActionInternal(action);
         }
         return this;
     }
 
     public synchronized StatisticPipeLine put(IStatisticAction action) {
-        mActions.add(action);
+        putActionInternal(action);
         return this;
     }
 
@@ -71,7 +74,7 @@ public class StatisticPipeLine {
         return new ArrayList<IStatisticAction>(mActions);
     }
 
-    public synchronized void clear() {
+    public synchronized void reset() {
         mActions.clear();
     }
 
@@ -93,9 +96,21 @@ public class StatisticPipeLine {
     private int find(String actionName) {
         for (int i = 0; i < mActions.size(); i++) {
             IStatisticAction action = mActions.get(i);
-            if (action.getName() != null && action.getName().equals(actionName))
+            if (action.getName() != null && action.getName() != null && action.getName().equals(actionName))
                 return i;
         }
         return -1;
+    }
+
+    private void putActionInternal(IStatisticAction action) {
+        if (action.onPut(this)) {
+            mActions.add(action);
+        }
+    }
+
+    private void putActionInternal(int i, IStatisticAction action) {
+        if (action.onPut(this)) {
+            mActions.add(i, action);
+        }
     }
 }
