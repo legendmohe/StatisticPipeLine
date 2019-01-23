@@ -34,16 +34,20 @@ public class StatisticPipeLine {
     }
 
     public synchronized StatisticPipeLine put(IStatisticAction action, String name) {
-        action.setName(name);
-        int i = find(name);
-        if (i >= 0) {
-            IStatisticAction oldAction = mActions.get(i);
-            if (oldAction.onReplace(this, action)) {
-                mActions.remove(i);
-                putActionInternal(i, action);
-            }
+        if (name == null) {
+            put(action);
         } else {
-            putActionInternal(action);
+            action.setName(name);
+            int i = find(name);
+            if (i >= 0) {
+                IStatisticAction oldAction = mActions.get(i);
+                if (oldAction.onReplace(this, action)) {
+                    mActions.remove(i);
+                    putActionInternal(i, action);
+                }
+            } else {
+                putActionInternal(action);
+            }
         }
         return this;
     }

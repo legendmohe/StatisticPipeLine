@@ -21,6 +21,8 @@ public class Main {
                 .put(TimerAction.Start.fromCurrentTimestamp(), "start_click")
         ;
 
+        pipeLine.put(EnumAction.fromValue(3, true), "entrance");
+
         // 模拟耗时操作
         sleep(2000);
 
@@ -55,11 +57,16 @@ public class Main {
         // 获得统计结果
         Map<String, Object> result = pipeLine.calculate();
         Map<String, Object> result2 = pipeLine.calculate();
+
+        // 重置
         pipeLine.reset();
 
-        // 结果为 {show_video=3005, counter=1, entrance=5, show_ui=2002}
-        System.out.println(result);
-        System.out.println(result2);
+        // 结果应该是一样的
+        if (!result.toString().equals(result2.toString())) {
+            throw new IllegalStateException("calculate 不一致");
+        } else {
+            System.out.println(result);
+        }
     }
 
     private static void sleep(int i) {

@@ -28,7 +28,7 @@ public abstract class BaseStatisticAction implements IStatisticAction {
     }
 
     @Override
-    public boolean onReplace(StatisticPipeLine pipeLine, IStatisticAction oldAction) {
+    public boolean onReplace(StatisticPipeLine pipeLine, IStatisticAction newAction) {
         return true;
     }
 
