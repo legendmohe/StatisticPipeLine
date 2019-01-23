@@ -12,7 +12,7 @@ import pipeline.TimerAction;
  * 这里提供了一个使用StatisticPipeLine的使用例子
  * 使用StatisticPipeLine的好处有：
  * 1. 统一统计逻辑
- * 2. 统一代码格式
+ * 2. 统一代码风格
  * 另外，StatisticPipeLine设计上也很方便根据业务需求扩展统计能力。
  */
 public class Main {
@@ -54,14 +54,6 @@ public class Main {
         MainStat.sendStat();
     }
 
-    private static void sleep(int i) {
-        try {
-            Thread.sleep(i);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-    }
-
     /*
     这里是业务统计类。
     不同业务可以新建自己的统计类。使用静态变量是为了方便跨模块标记打点。
@@ -96,6 +88,16 @@ public class Main {
                 // 模拟发送数据
                 System.out.println(result);
             }
+        }
+    }
+
+    ///////////////////////////////////private///////////////////////////////////
+
+    private static void sleep(int i) {
+        try {
+            Thread.sleep(i);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
     }
 }
