@@ -35,20 +35,20 @@ public class Main {
         // 结束计时
         pipeLine.put(TimerAction.End.fromStart("start_click"), "show_video");
 
-        // 对结果进行处理
+        // 对结果进行拦截
         pipeLine.put(new InterceptAction() {
 
             @Override
-            public void onAssemble(StatisticPipeLine pipeLine, Map<String, Object> context, Map<String, Object> result) {
+            public void onCalculate(StatisticPipeLine pipeLine, Map<String, Object> context, Map<String, Object> result) {
                 result.put("other", "hahaha");
             }
         });
 
         // 获得统计结果
-        Map<String, Object> assemble = pipeLine.assemble();
+        Map<String, Object> result = pipeLine.calculate();
 
         // 结果为 {show_video=3005, counter=1, entrance=5, show_ui=2002}
-        System.out.println(assemble);
+        System.out.println(result);
     }
 
     private static void sleep(int i) {

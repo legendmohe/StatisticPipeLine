@@ -18,6 +18,11 @@ public abstract class BaseStatisticAction implements IStatisticAction {
     }
 
     @Override
+    public boolean onReplace(StatisticPipeLine pipeLine, IStatisticAction oldAction) {
+        return true;
+    }
+
+    @Override
     public IStatisticAction copy() {
         return null;
     }

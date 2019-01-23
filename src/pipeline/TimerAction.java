@@ -31,7 +31,7 @@ public interface TimerAction {
         }
 
         @Override
-        public void onAssemble(StatisticPipeLine pipeLine, Map<String, Object> context, Map<String, Object> result) {
+        public void onCalculate(StatisticPipeLine pipeLine, Map<String, Object> context, Map<String, Object> result) {
         }
     }
 
@@ -52,7 +52,7 @@ public interface TimerAction {
         }
 
         @Override
-        public void onAssemble(StatisticPipeLine pipeLine, Map<String, Object> context, Map<String, Object> result) {
+        public void onCalculate(StatisticPipeLine pipeLine, Map<String, Object> context, Map<String, Object> result) {
             IStatisticAction action = pipeLine.get(mStartActionName);
             if (action instanceof Start) {
                 long startTs = ((Start) action).getStartTs();
@@ -60,8 +60,4 @@ public interface TimerAction {
             }
         }
     }
-
-    ///////////////////////////////////avg///////////////////////////////////
-
-
 }

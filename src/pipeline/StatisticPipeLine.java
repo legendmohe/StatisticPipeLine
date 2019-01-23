@@ -34,8 +34,11 @@ public class StatisticPipeLine {
         action.setName(name);
         int i = find(name);
         if (i >= 0) {
-            mActions.remove(i);
-            mActions.add(i, action);
+            IStatisticAction oldAction = mActions.get(i);
+            if (oldAction.onReplace(this, action)) {
+                mActions.remove(i);
+                mActions.add(i, action);
+            }
         } else {
             mActions.add(action);
         }
@@ -72,14 +75,14 @@ public class StatisticPipeLine {
         mActions.clear();
     }
 
-    public synchronized Map<String, Object> assemble() {
+    public synchronized Map<String, Object> calculate() {
         // 存放结果
         HashMap<String, Object> result = new HashMap<String, Object>();
         // 用于各个action之间共享数据
         HashMap<String, Object> context = new HashMap<String, Object>();
         for (IStatisticAction action : mActions) {
             if (action.getName() != null && action.getName().length() > 0) {
-                action.onAssemble(this, context, result);
+                action.onCalculate(this, context, result);
             }
         }
         return result;
