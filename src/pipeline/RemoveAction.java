@@ -9,11 +9,11 @@ import java.util.Set;
  * <p>
  * Created by hexinyu on 2019/1/23.
  */
-public class ClearAction extends BaseStatisticAction {
+public class RemoveAction extends BaseStatisticAction {
 
     private Set<String> mNames = new HashSet<>();
 
-    public ClearAction(String[] names) {
+    public RemoveAction(String[] names) {
         if (names != null) {
             for (String name : names) {
                 mNames.add(name);
@@ -21,8 +21,8 @@ public class ClearAction extends BaseStatisticAction {
         }
     }
 
-    public static ClearAction forName(String... names) {
-        return new ClearAction(names);
+    public static RemoveAction forName(String... names) {
+        return new RemoveAction(names);
     }
 
     @Override
