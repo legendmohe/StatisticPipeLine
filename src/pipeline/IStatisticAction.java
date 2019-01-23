@@ -32,7 +32,7 @@ public interface IStatisticAction {
      * 注入相同name的action时，决定是否进行替换
      *
      * @param pipeLine
-     * @param oldAction
+     * @param newAction
      * @return true为替换，false为不替换
      */
     boolean onReplace(StatisticPipeLine pipeLine, IStatisticAction newAction);
@@ -45,4 +45,13 @@ public interface IStatisticAction {
      * @param result
      */
     void onCalculate(StatisticPipeLine pipeLine, Map<String, Object> context, Map<String, Object> result);
+
+    /**
+     * 在进行计算结果后回调
+     *
+     * @param pipeLine
+     * @param context
+     * @return false为从action队列中移除，true为不移除
+     */
+    boolean onPostCalculate(StatisticPipeLine pipeLine, Map<String, Object> context);
 }

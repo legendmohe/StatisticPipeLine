@@ -1,5 +1,7 @@
 package pipeline;
 
+import java.util.Map;
+
 /**
  * Created by hexinyu on 2019/1/22.
  */
@@ -29,6 +31,11 @@ public abstract class BaseStatisticAction implements IStatisticAction {
 
     @Override
     public boolean onReplace(StatisticPipeLine pipeLine, IStatisticAction newAction) {
+        return true;
+    }
+
+    @Override
+    public boolean onPostCalculate(StatisticPipeLine pipeLine, Map<String, Object> context) {
         return true;
     }
 

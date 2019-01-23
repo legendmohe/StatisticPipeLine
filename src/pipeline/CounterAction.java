@@ -6,6 +6,8 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
+ * 计数动作
+ *
  * Created by hexinyu on 2019/1/22.
  */
 public class CounterAction extends BaseStatisticAction {
@@ -18,7 +20,7 @@ public class CounterAction extends BaseStatisticAction {
         return new CounterAction(initValue);
     }
 
-    public static CounterAction zero() {
+    public static CounterAction fromZero() {
         return fromValue(0);
     }
 
@@ -29,6 +31,8 @@ public class CounterAction extends BaseStatisticAction {
     public static IStatisticAction decrease(String counter) {
         return new Decreaser(counter);
     }
+
+    //////////////////////////////////////////////////////////////////////
 
     private CounterAction(int initValue) {
         mInitValue = new AtomicInteger(initValue);

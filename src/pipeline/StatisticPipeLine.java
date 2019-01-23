@@ -75,7 +75,7 @@ public class StatisticPipeLine {
     }
 
     public synchronized List<IStatisticAction> getActions() {
-        return new ArrayList<IStatisticAction>(mActions);
+        return new ArrayList<>(mActions);
     }
 
     public synchronized void reset() {
@@ -90,6 +90,11 @@ public class StatisticPipeLine {
         for (IStatisticAction action : mActions) {
             if (action.getName() != null && action.getName().length() > 0) {
                 action.onCalculate(this, context, result);
+            }
+        }
+        for (IStatisticAction action : new ArrayList<>(mActions)) {
+            if (!action.onPostCalculate(this, context)) {
+                mActions.remove(action);
             }
         }
         return result;

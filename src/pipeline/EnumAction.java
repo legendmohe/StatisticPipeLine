@@ -3,6 +3,8 @@ package pipeline;
 import java.util.Map;
 
 /**
+ * 枚举动作
+ *
  * Created by hexinyu on 2019/1/22.
  */
 public class EnumAction<T> extends BaseStatisticAction {
