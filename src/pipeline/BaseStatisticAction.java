@@ -20,22 +20,22 @@ public abstract class BaseStatisticAction implements IStatisticAction {
     }
 
     @Override
-    public boolean onPut(StatisticPipeLine pipeLine) {
+    public boolean onPut(IStatisticPipeLine pipeLine) {
         return true;
     }
 
     @Override
-    public void onReset(StatisticPipeLine pipeLine) {
+    public void onReset(IStatisticPipeLine pipeLine) {
 
     }
 
     @Override
-    public boolean onReplace(StatisticPipeLine pipeLine, IStatisticAction newAction) {
+    public boolean onReplace(IStatisticPipeLine pipeLine, IStatisticAction newAction) {
         return true;
     }
 
     @Override
-    public boolean onPostCollect(StatisticPipeLine pipeLine, Map<String, Object> context) {
+    public boolean onPostCollect(IStatisticPipeLine pipeLine, Map<String, Object> context) {
         return true;
     }
 

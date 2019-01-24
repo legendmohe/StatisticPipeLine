@@ -19,14 +19,14 @@ public interface IStatisticAction {
      * @param pipeLine
      * @return true为可以放进去，false为不放进去
      */
-    boolean onPut(StatisticPipeLine pipeLine);
+    boolean onPut(IStatisticPipeLine pipeLine);
 
     /**
      * pipeLine调用reset，用于action清理状态
      *
      * @param pipeLine
      */
-    void onReset(StatisticPipeLine pipeLine);
+    void onReset(IStatisticPipeLine pipeLine);
 
     /**
      * 注入相同name的action时，决定是否进行替换
@@ -35,7 +35,7 @@ public interface IStatisticAction {
      * @param newAction
      * @return true为替换，false为不替换
      */
-    boolean onReplace(StatisticPipeLine pipeLine, IStatisticAction newAction);
+    boolean onReplace(IStatisticPipeLine pipeLine, IStatisticAction newAction);
 
     /**
      * 计算结果。注意，action要满足多次assemble结果是一致的
@@ -44,7 +44,7 @@ public interface IStatisticAction {
      * @param context
      * @param result
      */
-    void onCollect(StatisticPipeLine pipeLine, Map<String, Object> context, Map<String, Object> result);
+    void onCollect(IStatisticPipeLine pipeLine, Map<String, Object> context, Map<String, Object> result);
 
     /**
      * 在进行计算结果后回调
@@ -53,5 +53,5 @@ public interface IStatisticAction {
      * @param context
      * @return false为从action队列中移除，true为不移除
      */
-    boolean onPostCollect(StatisticPipeLine pipeLine, Map<String, Object> context);
+    boolean onPostCollect(IStatisticPipeLine pipeLine, Map<String, Object> context);
 }

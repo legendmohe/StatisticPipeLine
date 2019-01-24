@@ -4,6 +4,7 @@ import java.util.Map;
 
 import pipeline.CounterAction;
 import pipeline.EnumAction;
+import pipeline.IStatisticPipeLine;
 import pipeline.InterceptAction;
 import pipeline.StatisticPipeLine;
 import pipeline.TimerAction;
@@ -22,7 +23,7 @@ public class Main {
         // 然后可以开始利用pipeline的能力进行打点。
         // StatisticPipeLine默认提供了开始-结束计时动作(TimerAction)、计数器动作(CounterAction)、枚举动作(EnumAction)
         // TODO - name字符串全部改成MainStat的常量
-        MainStat.pipeline()
+        ExampleStat.pipeline()
                 .put(EnumAction.fromValue(5), "entrance")
                 .put(CounterAction.fromZero(), "counter")
                 .put(TimerAction.Start.fromCurrentTimestamp(), "start_click")
@@ -32,39 +33,39 @@ public class Main {
         sleep(2000);
 
         // 结束计时
-        MainStat.pipeline().put(TimerAction.End.fromStart("start_click"), "show_ui");
+        ExampleStat.pipeline().put(TimerAction.End.fromStart("start_click"), "show_ui");
         // 收集平均值
-        MainStat.pipeline().put(TimerAction.Avg.collect("start_click"), "show_ui_avg");
+        ExampleStat.pipeline().put(TimerAction.Avg.collect("start_click"), "show_ui_avg");
 
         // 计数器+1
-        MainStat.pipeline().put(CounterAction.increase("counter")); // should print counter=1
+        ExampleStat.pipeline().put(CounterAction.increase("counter")); // should print counter=1
 
         // 再次点击
-        MainStat.pipeline().put(TimerAction.Start.fromCurrentTimestamp(), "start_click");
+        ExampleStat.pipeline().put(TimerAction.Start.fromCurrentTimestamp(), "start_click");
 
         // 模拟耗时操作
         sleep(1000);
 
         // 结束计时
-        MainStat.pipeline().put(TimerAction.End.fromStart("start_click"), "show_video");
+        ExampleStat.pipeline().put(TimerAction.End.fromStart("start_click"), "show_video");
         // 收集平均值
-        MainStat.pipeline().put(TimerAction.Avg.collect("start_click"), "show_ui_avg");
+        ExampleStat.pipeline().put(TimerAction.Avg.collect("start_click"), "show_ui_avg");
 
         // 可以清除指定name的action
 //        MainStat.pipeline().put(RemoveAction.forName("show_ui_avg"));
 
         // 结束统计，发送统计数据
-        MainStat.sendStat();
+        ExampleStat.sendStat();
     }
 
     /*
     这里是业务统计类。
     不同业务可以新建自己的统计类。使用静态变量是为了方便跨模块标记打点。
      */
-    private static class MainStat {
-        private static StatisticPipeLine sPipeLine = StatisticPipeLine.create("game_statistic");
+    private static class ExampleStat {
+        private static IStatisticPipeLine sPipeLine = StatisticPipeLine.create("game_statistic");
 
-        public static StatisticPipeLine pipeline() {
+        public static IStatisticPipeLine pipeline() {
             return sPipeLine;
         }
 
@@ -72,7 +73,7 @@ public class Main {
             // 可以对已经处理了的结果再次进行处理
             sPipeLine.put(new InterceptAction() {
                 @Override
-                public void onCollect(StatisticPipeLine pipeLine, Map<String, Object> context, Map<String, Object> result) {
+                public void onCollect(IStatisticPipeLine pipeLine, Map<String, Object> context, Map<String, Object> result) {
                     result.put("total_result_count", result.size());
                 }
             });

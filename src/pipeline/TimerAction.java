@@ -33,7 +33,7 @@ public interface TimerAction {
         }
 
         @Override
-        public void onCollect(StatisticPipeLine pipeLine, Map<String, Object> context, Map<String, Object> result) {
+        public void onCollect(IStatisticPipeLine pipeLine, Map<String, Object> context, Map<String, Object> result) {
         }
     }
 
@@ -53,7 +53,7 @@ public interface TimerAction {
         }
 
         @Override
-        public boolean onPut(StatisticPipeLine pipeLine) {
+        public boolean onPut(IStatisticPipeLine pipeLine) {
             IStatisticAction action = pipeLine.get(mStartActionName);
             if (action instanceof Start) {
                 long startTs = ((Start) action).getStartTs();
@@ -63,7 +63,7 @@ public interface TimerAction {
         }
 
         @Override
-        public void onCollect(StatisticPipeLine pipeLine, Map<String, Object> context, Map<String, Object> result) {
+        public void onCollect(IStatisticPipeLine pipeLine, Map<String, Object> context, Map<String, Object> result) {
             result.put(getName(), mPeriod);
         }
     }
@@ -106,7 +106,7 @@ public interface TimerAction {
         }
 
         @Override
-        public boolean onPut(StatisticPipeLine pipeLine) {
+        public boolean onPut(IStatisticPipeLine pipeLine) {
             IStatisticAction startAction = pipeLine.get(mStartActionName);
             if (!(startAction instanceof Start)) {
                 throw new NullPointerException("start action must be instance of TimerAction.Start:" + mStartActionName);
@@ -117,7 +117,7 @@ public interface TimerAction {
         }
 
         @Override
-        public void onCollect(StatisticPipeLine pipeLine, Map<String, Object> context, Map<String, Object> result) {
+        public void onCollect(IStatisticPipeLine pipeLine, Map<String, Object> context, Map<String, Object> result) {
             if (result.containsKey(mGroupName)) {
                 // 不要每一个都算一遍
                 return;

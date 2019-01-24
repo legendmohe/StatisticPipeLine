@@ -34,12 +34,12 @@ public class EnumAction<T> extends BaseStatisticAction {
     }
 
     @Override
-    public boolean onReplace(StatisticPipeLine pipeLine, IStatisticAction newAction) {
+    public boolean onReplace(IStatisticPipeLine pipeLine, IStatisticAction newAction) {
         return !(newAction instanceof EnumAction) || ((EnumAction) newAction).isReplaceLast();
     }
 
     @Override
-    public void onCollect(StatisticPipeLine pipeLine, Map<String, Object> context, Map<String, Object> result) {
+    public void onCollect(IStatisticPipeLine pipeLine, Map<String, Object> context, Map<String, Object> result) {
         result.put(getName(), mValue);
     }
 }

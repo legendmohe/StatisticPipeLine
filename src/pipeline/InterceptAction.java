@@ -21,7 +21,7 @@ public abstract class InterceptAction extends BaseStatisticAction {
     }
 
     @Override
-    public boolean onPostCollect(StatisticPipeLine pipeLine, Map<String, Object> context) {
+    public boolean onPostCollect(IStatisticPipeLine pipeLine, Map<String, Object> context) {
         return !mRemoveAfterCollect;
     }
 }

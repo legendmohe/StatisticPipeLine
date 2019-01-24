@@ -1,19 +1,22 @@
 package pipeline;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Created by hexinyu on 2019/1/22.
  */
-public class StatisticPipeLine {
+public class StatisticPipeLine implements IStatisticPipeLine {
 
     ///////////////////////////////////static///////////////////////////////////
 
-    public static StatisticPipeLine create(String tag) {
+    public static IStatisticPipeLine create(String tag) {
         return new StatisticPipeLine(tag);
     }
 
@@ -30,11 +33,13 @@ public class StatisticPipeLine {
         mTag = tag;
     }
 
+    @Override
     public String getTag() {
         return mTag;
     }
 
-    public synchronized StatisticPipeLine put(IStatisticAction action, String name) {
+    @Override
+    public synchronized IStatisticPipeLine put(IStatisticAction action, String name) {
         if (name == null) {
             put(action);
         } else {
@@ -53,11 +58,13 @@ public class StatisticPipeLine {
         return this;
     }
 
-    public synchronized StatisticPipeLine put(IStatisticAction action) {
+    @Override
+    public synchronized IStatisticPipeLine put(IStatisticAction action) {
         putActionInternal(action);
         return this;
     }
 
+    @Override
     public synchronized IStatisticAction get(String name) {
         if (name == null || name.length() == 0) {
             return null;
@@ -70,6 +77,7 @@ public class StatisticPipeLine {
         return null;
     }
 
+    @Override
     public synchronized void remove(String name) {
         ListIterator<IStatisticAction> iter = mActions.listIterator();
         while (iter.hasNext()) {
@@ -79,6 +87,7 @@ public class StatisticPipeLine {
         }
     }
 
+    @Override
     public synchronized void remove(String name, Comparable<IStatisticAction> comparator) {
         ListIterator<IStatisticAction> iter = mActions.listIterator();
         while (iter.hasNext()) {
@@ -88,15 +97,18 @@ public class StatisticPipeLine {
         }
     }
 
+    @Override
     public synchronized IStatisticAction getClone(String name) {
         IStatisticAction iStatisticAction = get(name);
         return iStatisticAction != null ? iStatisticAction.copy() : null;
     }
 
+    @Override
     public synchronized List<IStatisticAction> getActions() {
         return new ArrayList<>(mActions);
     }
 
+    @Override
     public synchronized void reset() {
         for (IStatisticAction action : mActions) {
             action.onReset(this);
@@ -104,6 +116,21 @@ public class StatisticPipeLine {
         mActions.clear();
     }
 
+    @Override
+    public synchronized void reset(String... excludes) {
+        Set<String> excludeSet = new HashSet<>(Arrays.asList(excludes));
+        List<IStatisticAction> startUp = new ArrayList<>();
+        for (IStatisticAction action : mActions) {
+            action.onReset(this);
+            if (excludeSet.contains(action.getName())) {
+                startUp.add(action);
+            }
+        }
+        mActions.clear();
+        mActions.addAll(startUp);
+    }
+
+    @Override
     public synchronized Map<String, Object> collect() {
         // 存放结果
         HashMap<String, Object> result = new HashMap<String, Object>();

@@ -26,7 +26,7 @@ public class RemoveAction extends BaseStatisticAction {
     }
 
     @Override
-    public boolean onPut(StatisticPipeLine pipeLine) {
+    public boolean onPut(IStatisticPipeLine pipeLine) {
         if (mNames.size() > 0) {
             for (final String name : mNames) {
                 pipeLine.remove(name, new Comparable<IStatisticAction>() {
@@ -45,7 +45,7 @@ public class RemoveAction extends BaseStatisticAction {
     }
 
     @Override
-    public void onCollect(StatisticPipeLine pipeLine, Map<String, Object> context, Map<String, Object> result) {
+    public void onCollect(IStatisticPipeLine pipeLine, Map<String, Object> context, Map<String, Object> result) {
 
     }
 }
