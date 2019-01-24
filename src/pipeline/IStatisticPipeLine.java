@@ -25,7 +25,7 @@ public interface IStatisticPipeLine {
 
     void reset();
 
-    void reset(String... excludes);
+    void clear(String... excludes);
 
     Map<String, Object> collect();
 }

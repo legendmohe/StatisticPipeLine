@@ -117,7 +117,7 @@ public class StatisticPipeLine implements IStatisticPipeLine {
     }
 
     @Override
-    public synchronized void reset(String... excludes) {
+    public synchronized void clear(String... excludes) {
         Set<String> excludeSet = new HashSet<>(Arrays.asList(excludes));
         List<IStatisticAction> startUp = new ArrayList<>();
         for (IStatisticAction action : mActions) {
