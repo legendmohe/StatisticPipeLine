@@ -32,11 +32,7 @@ public class RemoveAction extends BaseStatisticAction {
                 pipeLine.remove(name, new Comparable<IStatisticAction>() {
                     @Override
                     public int compareTo(IStatisticAction o) {
-                        // 适配TimerAction.Avg
-                        if (o instanceof TimerAction.Avg) {
-                            return o.getName().startsWith(name) ? 0 : -1;
-                        }
-                        return o.getName().equals(name) ? 0 : -1;
+                        return o.matchName(name) ? 0 : -1;
                     }
                 });
             }

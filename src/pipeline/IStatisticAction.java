@@ -11,6 +11,19 @@ public interface IStatisticAction {
 
     void setName(String name);
 
+    /**
+     * 是否符合参数name
+     *
+     * @param name
+     * @return
+     */
+    boolean matchName(String name);
+
+    /**
+     * 返回一个copy对象（deep copy）
+     *
+     * @return
+     */
     IStatisticAction copy();
 
     /**

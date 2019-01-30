@@ -40,6 +40,9 @@ public class Main {
         // 计数器+1
         ExampleStat.pipeline().put(CounterAction.increase("counter")); // should print counter=1
 
+        Map<String, Object> show_video = ExampleStat.pipeline().collect("show_ui_avg");
+        System.out.println("collect name=" + show_video);
+
         // 再次点击
         ExampleStat.pipeline().put(TimerAction.Start.fromCurrentTimestamp(), "start_click");
 
@@ -79,8 +82,8 @@ public class Main {
             });
 
             // 获得统计结果
-            Map<String, Object> result = sPipeLine.collect();
-            Map<String, Object> result2 = sPipeLine.collect();
+            Map<String, Object> result = sPipeLine.collectAll();
+            Map<String, Object> result2 = sPipeLine.collectAll();
 
             // 重置，清空action
             sPipeLine.reset();

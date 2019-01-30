@@ -1,13 +1,10 @@
 package pipeline;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
-import java.util.Set;
 
 /**
  * Created by hexinyu on 2019/1/22.
@@ -70,7 +67,7 @@ public class StatisticPipeLine implements IStatisticPipeLine {
             return null;
         }
         for (IStatisticAction action : mActions) {
-            if (action.getName().equals(name)) {
+            if (action.matchName(name)) {
                 return action;
             }
         }
@@ -81,7 +78,7 @@ public class StatisticPipeLine implements IStatisticPipeLine {
     public synchronized void remove(String name) {
         ListIterator<IStatisticAction> iter = mActions.listIterator();
         while (iter.hasNext()) {
-            if (iter.next().getName().equals(name)) {
+            if (iter.next().matchName(name)) {
                 iter.remove();
             }
         }
@@ -118,12 +115,13 @@ public class StatisticPipeLine implements IStatisticPipeLine {
 
     @Override
     public synchronized void clear(String... excludes) {
-        Set<String> excludeSet = new HashSet<>(Arrays.asList(excludes));
         List<IStatisticAction> startUp = new ArrayList<>();
         for (IStatisticAction action : mActions) {
             action.onReset(this);
-            if (excludeSet.contains(action.getName())) {
-                startUp.add(action);
+            for (String exclude : excludes) {
+                if (action.matchName(exclude)) {
+                    startUp.add(action);
+                }
             }
         }
         mActions.clear();
@@ -131,19 +129,26 @@ public class StatisticPipeLine implements IStatisticPipeLine {
     }
 
     @Override
-    public synchronized Map<String, Object> collect() {
+    public synchronized Map<String, Object> collectAll() {
+        return collect(null);
+    }
+
+    @Override
+    public Map<String, Object> collect(String name) {
         // 存放结果
         HashMap<String, Object> result = new HashMap<String, Object>();
         // 用于各个action之间共享数据
         HashMap<String, Object> context = new HashMap<String, Object>();
         for (IStatisticAction action : mActions) {
-            if (action.getName() != null && action.getName().length() > 0) {
+            if (action.getName() != null && action.getName().length() > 0
+                    && (name == null || action.matchName(name))) { // 如果name==null，则全部collect
                 action.onCollect(this, context, result);
             }
         }
         ListIterator<IStatisticAction> iter = mActions.listIterator();
         while (iter.hasNext()) {
-            if (!iter.next().onPostCollect(this, context)) {
+            IStatisticAction next = iter.next();
+            if (!next.onPostCollect(this, context)) {
                 iter.remove();
             }
         }
@@ -155,6 +160,7 @@ public class StatisticPipeLine implements IStatisticPipeLine {
     private int find(String actionName) {
         for (int i = 0; i < mActions.size(); i++) {
             IStatisticAction action = mActions.get(i);
+            // 这里不用matchName，因为要精确检查
             if (action.getName() != null && action.getName() != null && action.getName().equals(actionName))
                 return i;
         }

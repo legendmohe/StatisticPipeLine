@@ -23,13 +23,20 @@ public interface TimerAction {
             return new Start(ts);
         }
 
-
         private Start(long startTs) {
             mStartTs = startTs;
         }
 
         public long getStartTs() {
             return mStartTs;
+        }
+
+        @Override
+        public boolean onPut(IStatisticPipeLine pipeLine) {
+            if (getName() == null || getName().length() == 0) {
+                throw new IllegalArgumentException("TimerAction.Start Action name cannot be null");
+            }
+            return super.onPut(pipeLine);
         }
 
         @Override
@@ -106,6 +113,11 @@ public interface TimerAction {
         }
 
         @Override
+        public boolean matchName(String name) {
+            return getName().startsWith(name);
+        }
+
+        @Override
         public boolean onPut(IStatisticPipeLine pipeLine) {
             IStatisticAction startAction = pipeLine.get(mStartActionName);
             if (!(startAction instanceof Start)) {
@@ -126,7 +138,7 @@ public interface TimerAction {
             long count = 0;
             List<IStatisticAction> actions = pipeLine.getActions();
             for (IStatisticAction action : actions) {
-                if (action instanceof Avg && action.getName().startsWith(mGroupName)) {
+                if (action instanceof Avg && action.matchName(mGroupName)) {
                     total += ((Avg) action).getPeriod();
                     count++;
                 }

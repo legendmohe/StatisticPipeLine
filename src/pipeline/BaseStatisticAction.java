@@ -20,6 +20,11 @@ public abstract class BaseStatisticAction implements IStatisticAction {
     }
 
     @Override
+    public boolean matchName(String name) {
+        return getName().equals(name);
+    }
+
+    @Override
     public boolean onPut(IStatisticPipeLine pipeLine) {
         return true;
     }
