@@ -130,19 +130,27 @@ public class StatisticPipeLine implements IStatisticPipeLine {
 
     @Override
     public synchronized Map<String, Object> collectAll() {
-        return collect(null);
+        return collect();
     }
 
     @Override
-    public Map<String, Object> collect(String name) {
+    public Map<String, Object> collect(String... names) {
         // 存放结果
         HashMap<String, Object> result = new HashMap<String, Object>();
         // 用于各个action之间共享数据
         HashMap<String, Object> context = new HashMap<String, Object>();
         for (IStatisticAction action : mActions) {
-            if (action.getName() != null && action.getName().length() > 0
-                    && (name == null || action.matchName(name))) { // 如果name==null，则全部collect
-                action.onCollect(this, context, result);
+            if (action.getName() != null && action.getName().length() > 0) {
+                if (names != null && names.length > 0) { // 只处理names里面的
+                    for (String name : names) {
+                        if (action.matchName(name)) {
+                            action.onCollect(this, context, result);
+                            // fixme - 这里需要break吗？
+                        }
+                    }
+                } else {
+                    action.onCollect(this, context, result);
+                }
             }
         }
         ListIterator<IStatisticAction> iter = mActions.listIterator();

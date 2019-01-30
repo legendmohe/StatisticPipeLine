@@ -29,5 +29,5 @@ public interface IStatisticPipeLine {
 
     Map<String, Object> collectAll();
 
-    Map<String, Object> collect(String name);
+    Map<String, Object> collect(String... names);
 }

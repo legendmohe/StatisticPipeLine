@@ -25,6 +25,11 @@ public abstract class BaseStatisticAction implements IStatisticAction {
     }
 
     @Override
+    public boolean equalTo(IStatisticAction action) {
+        return action == this;
+    }
+
+    @Override
     public boolean onPut(IStatisticPipeLine pipeLine) {
         return true;
     }

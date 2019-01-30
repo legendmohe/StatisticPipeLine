@@ -40,11 +40,15 @@ public class Main {
         // 计数器+1
         ExampleStat.pipeline().put(CounterAction.increase("counter")); // should print counter=1
 
-        Map<String, Object> show_video = ExampleStat.pipeline().collect("show_ui_avg");
+        // 可以中途收集数据
+        Map<String, Object> show_video = ExampleStat.pipeline().collect("show_ui_avg", "counter", "show_ui", "not exist");
         System.out.println("collect name=" + show_video);
 
         // 再次点击
         ExampleStat.pipeline().put(TimerAction.Start.fromCurrentTimestamp(), "start_click");
+
+        // 计数器+1
+        ExampleStat.pipeline().put(CounterAction.increase("counter")); // should print counter=1
 
         // 模拟耗时操作
         sleep(1000);
