@@ -33,8 +33,18 @@ public class Main {
         // 计数器+1
         ExampleStat.pipeline().put(CounterAction.increase("counter")); // should print counter=1
 
+        // 可以中途收集数据
+        Map<String, Object> show_video = ExampleStat.pipeline().collect("entrance", "show_ui_avg", "counter", "show_ui", "not exist");
+        System.out.println("collect name=" + show_video);
+
+        // 不覆盖前一次
+        ExampleStat.pipeline().put(EnumAction.fromValue(6, false), "entrance");
+
         // 再次点击
         ExampleStat.pipeline().put(TimerAction.Start.fromCurrentTimestamp(), "start_click");
+
+        // 计数器+1
+        ExampleStat.pipeline().put(CounterAction.increase("counter")); // should print counter=1
 
         // 模拟耗时操作
         sleep(1000);
@@ -72,8 +82,8 @@ public class Main {
             });
 
             // 获得统计结果
-            Map<String, Object> result = sPipeLine.collect();
-            Map<String, Object> result2 = sPipeLine.collect();
+            Map<String, Object> result = sPipeLine.collectAll();
+            Map<String, Object> result2 = sPipeLine.collectAll();
 
             // 重置，清空action
             sPipeLine.reset();
