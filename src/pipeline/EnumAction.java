@@ -13,7 +13,7 @@ public class EnumAction<T> extends BaseStatisticAction {
     private boolean mReplaceLast;
 
     public static <T> EnumAction<T> fromValue(T value) {
-        return new EnumAction<T>(value, false);
+        return new EnumAction<T>(value, true);
     }
 
     public static <T> EnumAction<T> fromValue(T value, boolean replaceLast) {
@@ -29,8 +29,16 @@ public class EnumAction<T> extends BaseStatisticAction {
         return mValue;
     }
 
-    public boolean isReplaceLast() {
+    private boolean isReplaceLast() {
         return mReplaceLast;
+    }
+
+    @Override
+    public boolean onPut(IStatisticPipeLine pipeLine) {
+        if (getName() == null || getName().length() == 0) {
+            throw new NullPointerException("EnumAction must have a name");
+        }
+        return super.onPut(pipeLine);
     }
 
     @Override

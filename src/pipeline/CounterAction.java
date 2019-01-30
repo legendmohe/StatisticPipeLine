@@ -53,6 +53,14 @@ public class CounterAction extends BaseStatisticAction {
     }
 
     @Override
+    public boolean onPut(IStatisticPipeLine pipeLine) {
+        if (getName() == null || getName().length() == 0) {
+            throw new NullPointerException("CounterAction must have a name");
+        }
+        return super.onPut(pipeLine);
+    }
+
+    @Override
     public void onCollect(IStatisticPipeLine pipeLine, Map<String, Object> context, Map<String, Object> result) {
         int intValue = mInitValue.intValue();
         for (IStatisticAction action : pipeLine.getActions()) {
@@ -87,6 +95,11 @@ public class CounterAction extends BaseStatisticAction {
         public String getCountName() {
             return mCounter;
         }
+
+        @Override
+        public boolean onPut(IStatisticPipeLine pipeLine) {
+            return true;
+        }
     }
 
     private static class Decreaser extends CounterAction implements CounterOp{
@@ -101,6 +114,11 @@ public class CounterAction extends BaseStatisticAction {
         @Override
         public String getCountName() {
             return mCounter;
+        }
+
+        @Override
+        public boolean onPut(IStatisticPipeLine pipeLine) {
+            return true;
         }
     }
 }
