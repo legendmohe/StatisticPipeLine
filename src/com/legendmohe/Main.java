@@ -23,7 +23,7 @@ public class Main {
         // 然后可以开始利用pipeline的能力进行打点。
         // StatisticPipeLine默认提供了开始-结束计时动作(TimerAction)、计数器动作(CounterAction)、枚举动作(EnumAction)
         // TODO - name字符串全部改成MainStat的常量
-        ExampleStat.pipeline()
+        ExampleStat.get()
                 .put(EnumAction.fromValue(5), "entrance")
                 .put(CounterAction.fromZero(), "counter")
                 .put(TimerAction.Start.fromCurrentTimestamp(), "start_click")
@@ -33,36 +33,36 @@ public class Main {
         sleep(2000);
 
         // 结束计时
-        ExampleStat.pipeline().put(TimerAction.End.fromStart("start_click"), "show_ui");
+        ExampleStat.get().put(TimerAction.End.fromStart("start_click"), "show_ui");
         // 收集平均值
-        ExampleStat.pipeline().put(TimerAction.Avg.collect("start_click"), "show_ui_avg");
+        ExampleStat.get().put(TimerAction.Avg.collect("start_click"), "show_ui_avg");
 
         // 计数器+1
-        ExampleStat.pipeline().put(CounterAction.increase("counter")); // should print counter=1
+        ExampleStat.get().put(CounterAction.increase("counter")); // should print counter=1
 
         // 可以中途收集数据
-        Map<String, Object> show_video = ExampleStat.pipeline().collect("entrance", "show_ui_avg", "counter", "show_ui", "not exist");
+        Map<String, Object> show_video = ExampleStat.get().collect("entrance", "show_ui_avg", "counter", "show_ui", "not exist");
         System.out.println("collect name=" + show_video);
 
         // 不覆盖前一次
-        ExampleStat.pipeline().put(EnumAction.fromValue(6, false), "entrance");
+        ExampleStat.get().put(EnumAction.fromValue(6, false), "entrance");
 
         // 再次点击
-        ExampleStat.pipeline().put(TimerAction.Start.fromCurrentTimestamp(), "start_click");
+        ExampleStat.get().put(TimerAction.Start.fromCurrentTimestamp(), "start_click");
 
         // 计数器+1
-        ExampleStat.pipeline().put(CounterAction.increase("counter")); // should print counter=1
+        ExampleStat.get().put(CounterAction.increase("counter")); // should print counter=1
 
         // 模拟耗时操作
         sleep(1000);
 
         // 结束计时
-        ExampleStat.pipeline().put(TimerAction.End.fromStart("start_click"), "show_video");
+        ExampleStat.get().put(TimerAction.End.fromStart("start_click"), "show_video");
         // 收集平均值
-        ExampleStat.pipeline().put(TimerAction.Avg.collect("start_click"), "show_ui_avg");
+        ExampleStat.get().put(TimerAction.Avg.collect("start_click"), "show_ui_avg");
 
         // 可以清除指定name的action
-//        MainStat.pipeline().put(RemoveAction.forName("show_ui_avg"));
+//        MainStat.get().put(RemoveAction.forName("show_ui_avg"));
 
         // 结束统计，发送统计数据
         ExampleStat.sendStat();
@@ -75,7 +75,7 @@ public class Main {
     private static class ExampleStat {
         private static IStatisticPipeLine sPipeLine = StatisticPipeLine.create("game_statistic");
 
-        public static IStatisticPipeLine pipeline() {
+        public static IStatisticPipeLine get() {
             return sPipeLine;
         }
 
