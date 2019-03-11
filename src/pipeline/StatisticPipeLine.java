@@ -129,12 +129,12 @@ public class StatisticPipeLine implements IStatisticPipeLine {
     }
 
     @Override
-    public synchronized Map<String, Object> collectAll() {
+    public final synchronized Map<String, Object> collectAll() {
         return collect();
     }
 
     @Override
-    public Map<String, Object> collect(String... names) {
+    public final Map<String, Object> collect(String... names) {
         // 存放结果
         HashMap<String, Object> result = new HashMap<String, Object>();
         // 用于各个action之间共享数据
@@ -160,7 +160,15 @@ public class StatisticPipeLine implements IStatisticPipeLine {
                 iter.remove();
             }
         }
+        onCollected(result);
         return result;
+    }
+
+    /*
+    供子类实现
+     */
+    protected void onCollected(Map<String, Object> result) {
+
     }
 
     ///////////////////////////////////private///////////////////////////////////
